@@ -33,4 +33,4 @@ EOF
 source /home/jgrassi/code/mars/venv/bin/activate
 
 # Esegui lo script Python
-python ${PROJDIR}/runscript/download-EERIE.py --config "${CONFIG_FILE}"
+python ${HPCROOTDIR}/git_project/runscript/download-EERIE.py --config "${CONFIG_FILE}"
