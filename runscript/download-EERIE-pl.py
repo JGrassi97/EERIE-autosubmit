@@ -23,7 +23,7 @@ def main():
         "experiment": "hist",
         "expver": "0002",
         "generation": "1",
-        "grid": "1/1",
+        "grid": ".25/.25",
         "levelist": "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000",
         "levtype": "pl",
         "model": "ifs",
