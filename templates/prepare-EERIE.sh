@@ -18,7 +18,7 @@ mkdir -p "${OUTDIR}"
 # Configuration directory for the Python script
 CONFIG_DIR="${HPCROOTDIR}/conf/${START_DATE}/${MEMBER}"
 mkdir -p "${CONFIG_DIR}"
-CONFIG_FILE="${CONFIG_DIR}/${START_DATE}/${MEMBER}.yaml"
+CONFIG_FILE="${CONFIG_DIR}/${MEMBER}.yaml"
 
 # Convert YYYYMMDD → YYYY-MM-DD
 START_ISO="${START_DATE:0:4}-${START_DATE:4:2}-${START_DATE:6:2}"
