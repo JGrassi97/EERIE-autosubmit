@@ -24,7 +24,7 @@ def main():
         "expver": "0002",
         "generation": "1",
         "grid": ".25/.25",
-        "levelist": "1/2/3/5/7/10/20/30/50/70/100/125/150/175/200/225/250/300/350/400/450/500/550/600/650/700/750/775/800/825/850/875/900/925/950/975/1000",
+        "levelist": "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000",
         "levtype": "pl",
         "model": "ifs",
         "param": "129/130/131/132/133", # Geopotential/Temperature/U component of wind/V component of wind/Specific humidity
