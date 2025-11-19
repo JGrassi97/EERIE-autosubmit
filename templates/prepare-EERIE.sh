@@ -9,7 +9,7 @@ START_DATE=%CHUNK_START_DATE%     # Typical format: YYYYMMDD
 END_DATE=%CHUNK_END_DATE%         # Same format as the chunk
 MEMBER=%MEMBER%
 
-MEMBER_NUM="${MEMBER#fc}"  # Rimuove "fc" dall'inizio
+MEMBER_NUM="${MEMBER#fc}"  # Remove "fc" from the beginning
 
 # Where to store the output data
 OUTDIR="${HPCROOTDIR}/DATA/${START_DATE}/${MEMBER}"

@@ -2,11 +2,11 @@
 # PREPARE-ICS-CMIP6
 set -xuve
 
-# Valori riempiti da Autosubmit:
+# Autofilled values by Autosubmit:
 HPCROOTDIR=%HPCROOTDIR%
 PROJDIR=%PROJDIR%
-START_DATE=%CHUNK_START_DATE%     # formati tipici: YYYYMMDD
-END_DATE=%CHUNK_END_DATE%         # stesso formato dei chunk
+START_DATE=%CHUNK_START_DATE%     # Format: YYYYMMDD
+END_DATE=%CHUNK_END_DATE%         # Same format as the chunk
 GIT_ORIGIN=%GIT.PROJECT_ORIGIN%
 PROJECT_BRANCH=%GIT.PROJECT_BRANCH%
 
