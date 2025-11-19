@@ -9,6 +9,7 @@ START_DATE=%CHUNK_START_DATE%     # Typical format: YYYYMMDD
 END_DATE=%CHUNK_END_DATE%         # Same format as the chunk
 MEMBER=%MEMBER%
 
+MEMBER_NUM="${MEMBER#fc}"  # Rimuove "fc" dall'inizio
 
 # Where to store the output data
 OUTDIR="${HPCROOTDIR}/DATA/${START_DATE}/${MEMBER}"
@@ -25,7 +26,7 @@ END_ISO="${END_DATE:0:4}-${END_DATE:4:2}-${END_DATE:6:2}"
 
 # Write configuration file in YAML format
 cat > "${CONFIG_FILE}" <<EOF
-member: ${MEMBER}
+member: ${MEMBER_NUM}
 start_time: ${START_ISO}
 end_time: ${END_ISO}
 output_path: ${OUTDIR}
