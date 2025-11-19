@@ -31,9 +31,3 @@ start_time: ${START_ISO}
 end_time: ${END_ISO}
 output_path: ${OUTDIR}
 EOF
-
-# Activate Python virtual environment
-source /home/jgrassi/code/mars/venv/bin/activate
-
-# Run the Python script
-python ${HPCROOTDIR}/git_project/runscript/download-EERIE.py --config "${CONFIG_FILE}"

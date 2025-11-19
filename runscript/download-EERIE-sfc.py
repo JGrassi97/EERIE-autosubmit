@@ -12,7 +12,7 @@ def main():
     output_path = config.get("output_path", ".")
     os.makedirs(output_path, exist_ok=True)
 
-    target = os.path.join(output_path, f"output_{start_date}_r{member}.grib")
+    target_sfc = os.path.join(output_path, f"output_{start_date}_r{member}_sfc.grib")
 
     server = ECMWFDataServer()
     server.retrieve({
@@ -23,15 +23,14 @@ def main():
         "experiment": "hist",
         "expver": "0002",
         "generation": "1",
-        "grid": "1/1",
-        "levelist": "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000",
-        "levtype": "pl",
+        "grid": ".25/.25",
+        "levtype": "sfc",
         "model": "ifs",
-        "param": "129/130/131/132/133", # Geopotential/Temperature/U component of wind/V component of wind/Specific humidity
+        "param": "31/34/78/79",
         "realization": f"{member}",
         "resolution": "high",
         "stream": "clte",
-        "target": target,
+        "target": target_sfc,
         "time": "00:00:00/06:00:00/12:00:00/18:00:00",
         "type": "fc"
     })
