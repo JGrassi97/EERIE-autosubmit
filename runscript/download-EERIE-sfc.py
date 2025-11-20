@@ -23,7 +23,7 @@ def main():
         "experiment": "hist",
         "expver": "0002",
         "generation": "1",
-        "grid": ".25/.25",
+        "grid": "1/1",
         "levtype": "sfc",
         "model": "ifs",
         "param": "31/34/78/79",
