@@ -12,7 +12,7 @@ def main():
     output_path = config.get("output_path", ".")
     os.makedirs(output_path, exist_ok=True)
 
-    target_pl = os.path.join(output_path, f"output_{start_date}_r{member}_pl.nc")
+    target_pl = os.path.join(output_path, f"output_{start_date}_r{member}_pl.grib")
 
     server = ECMWFDataServer()
     server.retrieve({
