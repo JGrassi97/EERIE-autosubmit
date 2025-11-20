@@ -20,3 +20,6 @@ SFC_NC="${OUTDIR}/output_${START_ISO}_r${MEMBER_NUM}_sfc.nc"
 
 # Interpolazione: target in Pa (hPa x 100)
 cdo -f nc copy ${SFC_GRIB} ${SFC_NC}
+
+# Remove the original GRIB file to save space
+rm ${SFC_GRIB}
