@@ -43,30 +43,26 @@ def regrid_and_fill(src: xr.Dataset, regridder) -> xr.Dataset:
 
 def run_forecast(model,
                  eval_eerie: xr.Dataset,
+                 eerie_input: xr.Dataset,
                  inner_steps: int,
                  forecast_days: int,
                  seed: int = 42) -> xr.Dataset:
     """
-    Run the model unroll:
-      - save outputs every `inner_steps` hours
-      - total length = `forecast_days` days
+    Run the model forecast and build output dataset with correct init_time and valid_time.
     """
     outer_steps = (forecast_days * 24) // inner_steps
     timedelta = np.timedelta64(1, "h") * inner_steps
+    lead_hours = np.arange(outer_steps, dtype=np.int64) * inner_steps  # forecast lead hours
 
-    # Forecast lead times in hours from init
-    lead_hours = np.arange(outer_steps, dtype=np.int64) * inner_steps  # [0, inner_steps, 2*inner_steps, ...]
-
-    # Initialize state from first two times (t0 for inputs, t1 for forcings)
+    # --- Model initialization ---
     inputs = model.inputs_from_xarray(eval_eerie.isel(time=0))
     input_forcings = model.forcings_from_xarray(eval_eerie.isel(time=1))
     rng_key = jax.random.key(seed)
     initial_state = model.encode(inputs, input_forcings, rng_key)
 
-    # Persistence of forcings (SST & sea ice) using first time slice
     all_forcings = model.forcings_from_xarray(eval_eerie.head(time=1))
 
-    # Unroll forecast
+    # --- Run model ---
     final_state, predictions = model.unroll(
         initial_state,
         all_forcings,
@@ -75,38 +71,38 @@ def run_forecast(model,
         start_with_input=True,
     )
 
-    # Convert model outputs to xarray using 'lead_hours' as the initial time axis
     predictions_ds = model.data_to_xarray(predictions, times=lead_hours)
 
-    # Build init_time and valid_time from the input dataset
-    init_time_value = np.asarray(eval_eerie.time.isel(time=0).values).astype('datetime64[ns]')
+    # --- Build init_time and valid_time from original eerie dataset ---
+    init0 = eerie_input.time.isel(time=0).values
+    init_time_value = np.datetime64(init0, 'ns')  # ensure datetime64[ns]
+
+    lead_td = lead_hours.astype('timedelta64[h]')
+    valid_time_vals = (init_time_value + lead_td).astype('datetime64[ns]')
+
     init_time = xr.DataArray(
-        init_time_value, dims=(),
+        init_time_value,
+        dims=(),
         attrs={"long_name": "model initialization time"}
     )
-
-    # valid_time = init_time + lead_hours (in hours)
-    valid_time_vals = init_time_value + lead_hours.astype("timedelta64[h]")
     valid_time = xr.DataArray(
-        valid_time_vals, dims=("time",),
+        valid_time_vals,
+        dims=("time",),
         attrs={"long_name": "valid time"}
     )
-
-    # forecast_hour as auxiliary coordinate on 'time'
     forecast_hour = xr.DataArray(
-        lead_hours, dims=("time",),
+        lead_hours,
+        dims=("time",),
         attrs={"long_name": "forecast lead time", "units": "hours since init_time"}
     )
 
-    # Replace the 'time' coordinate with valid_time, and attach init_time & forecast_hour
+    # --- Assign datetime coordinates ---
     predictions_ds = predictions_ds.assign_coords(
         time=("time", valid_time.values),
+        valid_time=("time", valid_time.values),
         init_time=init_time,
         forecast_hour=forecast_hour,
-        valid_time=("time", valid_time.values),
     )
-
-    # Optional: set CF-style units/attrs on 'time'
     predictions_ds["time"].attrs.update({"standard_name": "time"})
 
     return predictions_ds
@@ -141,6 +137,7 @@ def main():
     predictions_ds = run_forecast(
         model,
         eval_eerie=eval_eerie,
+        eerie_input=eerie,         # <--- pass original input dataset
         inner_steps=args.inner_steps,
         forecast_days=args.forecast_days,
         seed=args.seed,
