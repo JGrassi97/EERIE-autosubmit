@@ -19,3 +19,7 @@ python "${SCRIPT_DIR}/prepare_input_layer.py" \
   --pl_path "${PL_INT_NC}" \
   --sfc_path "${SFC_NC}" \
   --out_path "${OUTFILE}"
+
+
+rm "${PL_INT_NC}"
+rm "${SFC_NC}"
