@@ -11,10 +11,7 @@ MEMBER_NUM="${MEMBER#fc}"
 
 INDIR="${HPCROOTDIR}/DATA/${START_DATE}/${MEMBER}"
 INFILE="${INDIR}/${START_ISO}_r${MEMBER_NUM}.nc"
-
-OUTDIR="${HPCROOTDIR}/DATA/${START_DATE}/${MEMBER}"
-mkdir -p "${OUTDIR}"
-OUTFILE="${OUTDIR}/${START_ISO}_r${MEMBER_NUM}_infer.nc"
+OUTFILE="${INDIR}/${START_ISO}_r${MEMBER_NUM}_infer.nc"
 
 # Activate Python virtual environment
 source /home/jgrassi/code/neuralGCM/venv/bin/activate
