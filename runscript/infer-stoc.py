@@ -105,23 +105,23 @@ def main():
             start_with_input=True,
         )
 
-        # Convert to xarray using VALID datetimes as the time axis
-        ds_m = model.data_to_xarray(predictions, times=valid_time_vals).compute()
+        # Build init_time from the ORIGINAL input dataset (not the regridded one)
+        init0 = eerie.time.isel(time=0).values
+        init_time_value = np.datetime64(init0, "ns")  # force datetime64[ns]
 
-        # Attach time coords: init_time (scalar datetime), valid_time (== time), forecast_hour (int hours)
-        ds_m = ds_m.assign_coords(
+        # valid_time = init_time + lead_hours[h]
+        valid_time_vals = (init_time_value + lead_hours.astype("timedelta64[h]")).astype("datetime64[ns]")
+        predictions_ds = model.data_to_xarray(predictions, times=valid_time_vals)
+
+        # Assign coordinates: replace 'time' with valid_time; keep forecast_hour auxiliary; add init_time (scalar)
+        predictions_ds = predictions_ds.assign_coords(
             init_time=init_time_value,
-            valid_time=("time", valid_time_vals),
-            forecast_hour=("time", lead_hours),
         )
-        ds_m["time"].attrs.update({"standard_name": "time"})
-        ds_m["forecast_hour"].attrs.update({"long_name": "forecast lead time", "units": "hours since init_time"})
 
-        # Expand with ensemble_member dimension and add seed as coord for traceability
-        ds_m = ds_m.expand_dims(ensemble_member=[member_ids[i]])
-        ds_m = ds_m.assign_coords(seed=("ensemble_member", np.array([args.seed + i], dtype=np.int64)))
+        predictions_ds["init_time"].attrs.update({"standard_name": "initialization_time"})
+        predictions_ds["time"].attrs.update({"standard_name": "time"})
 
-        members.append(ds_m)
+        members.append(predictions_ds)
 
     # Concatenate all members
     predictions_ds = xr.concat(members, dim="ensemble_member")
