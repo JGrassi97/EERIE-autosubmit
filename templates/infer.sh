@@ -22,3 +22,4 @@ source /home/jgrassi/code/neuralGCM/venv/bin/activate
 python ${HPCROOTDIR}/git_project/runscript/infer.py \
   --input_path "${INFILE}" \
   --output_path "${OUTFILE}" \
+  --outer_steps 10
