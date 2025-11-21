@@ -31,7 +31,7 @@ def main():
         "resolution": "high",
         "stream": "clte",
         "target": target_sfc,
-        "time": "00:00:00/06:00:00/12:00:00/18:00:00",
+        "time": "00:00:00/06:00:00",
         "type": "fc"
     })
 
