@@ -19,6 +19,6 @@ source /home/jgrassi/code/neuralGCM/venv/bin/activate
 python ${HPCROOTDIR}/git_project/runscript/infer.py \
   --input_path "${INFILE}" \
   --output_path "${OUTFILE}" \
-  --num_steps 10
+  --num_steps 40
 
 rm "${INFILE}"
