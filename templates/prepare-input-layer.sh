@@ -15,7 +15,7 @@ OUTFILE="${OUTDIR}/${START_ISO}_r${MEMBER_NUM}.nc"
 source /home/jgrassi/code/neuralGCM/venv/bin/activate
 
 # === Run the Python preparation script ===
-python "${SCRIPT_DIR}/prepare_input_layer.py" \
+python "${HPCROOTDIR}/git_project/runscript/prepare_input_layer.py" \
   --pl_path "${PL_INT_NC}" \
   --sfc_path "${SFC_NC}" \
   --out_path "${OUTFILE}"
