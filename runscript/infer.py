@@ -56,7 +56,8 @@ def run_forecast(model,
     """
     outer_steps = (forecast_days * 24) // inner_steps
     timedelta = np.timedelta64(1, "h") * inner_steps
-    times = (np.arange(outer_steps) * inner_steps)  # hours since t0
+    # time axis in hours since init
+    times = (np.arange(outer_steps) * inner_steps)
 
     # Initialize state from first two times (t0 for inputs, t1 for forcings)
     inputs = model.inputs_from_xarray(eval_eerie.isel(time=0))
@@ -76,7 +77,35 @@ def run_forecast(model,
         start_with_input=True,
     )
 
+    # Convert model outputs to xarray with a numeric time axis (hours since init)
     predictions_ds = model.data_to_xarray(predictions, times=times)
+
+    # Derive init_time (scalar) from the input dataset and compute valid_time
+    init_time = xr.DataArray(
+        eval_eerie.time.isel(time=0).values,
+        dims=(),
+        attrs={"long_name": "model initialization time", "standard_name": "init_time"},
+    )
+    forecast_hour = xr.DataArray(
+        times, dims=("time",),
+        attrs={"long_name": "forecast lead time", "units": "hours since init_time"}
+    )
+    valid_time = xr.DataArray(
+        init_time.values + forecast_hour.values.astype("timedelta64[h]"),
+        dims=("time",),
+        attrs={"long_name": "valid time", "standard_name": "time"}
+    )
+
+    # Attach coordinates (keeps existing 'time' dimension; adds valid_time/init_time/forecast_hour)
+    predictions_ds = predictions_ds.assign_coords(
+        init_time=init_time,
+        forecast_hour=forecast_hour,
+        valid_time=("time", valid_time.values),
+    )
+
+    # Optionally set 'time' to be the valid_time while keeping forecast_hour as auxiliary:
+    # predictions_ds = predictions_ds.swap_dims({"time": "time"}).assign_coords(time=("time", valid_time.values))
+
     return predictions_ds
 
 
@@ -100,17 +129,12 @@ def main():
 
     args = parser.parse_args()
 
-    # Load model
     model = load_model(args.model_name)
-
-    # Load prepared input dataset
     eerie = xr.open_dataset(args.input_path)
 
-    # Build regridder from input grid to model grid and regrid dataset
     regridder = build_regridder(eerie, model.data_coords.horizontal)
     eval_eerie = regrid_and_fill(eerie, regridder)
 
-    # Run forecast
     predictions_ds = run_forecast(
         model,
         eval_eerie=eval_eerie,
@@ -119,7 +143,6 @@ def main():
         seed=args.seed,
     )
 
-    # Save predictions
     predictions_ds.to_netcdf(args.output_path)
 
 
