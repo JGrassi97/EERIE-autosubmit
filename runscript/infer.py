@@ -94,7 +94,7 @@ def main():
     )
 
     # Convert model outputs to xarray with a numeric lead axis (hours)
-    predictions_ds = model.data_to_xarray(predictions, times=lead_hours)
+    
 
     # Build init_time from the ORIGINAL input dataset (not the regridded one)
     init0 = eerie.time.isel(time=0).values
@@ -103,13 +103,17 @@ def main():
     # valid_time = init_time + lead_hours[h]
     valid_time_vals = (init_time_value + lead_hours.astype("timedelta64[h]")).astype("datetime64[ns]")
 
+    predictions_ds = model.data_to_xarray(predictions, times=valid_time_vals)
+
     # Assign coordinates: replace 'time' with valid_time; keep forecast_hour auxiliary; add init_time (scalar)
     predictions_ds = predictions_ds.assign_coords(
-        time=("time", valid_time_vals),
-        valid_time=("time", valid_time_vals),
-        #forecast_hour=("time", lead_hours),
+        # time=("time", valid_time_vals),
+        # valid_time=("time", valid_time_vals),
+        # #forecast_hour=("time", lead_hours),
         init_time=init_time_value,
     )
+
+    predictions_ds["init_time"].attrs.update({"standard_name": "initialization_time"})
     predictions_ds["time"].attrs.update({"standard_name": "time"})
     #predictions_ds["forecast_hour"].attrs.update({"long_name": "forecast lead time", "units": "hours since init_time"})
 
