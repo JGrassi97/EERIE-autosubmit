@@ -1,11 +1,18 @@
-# Valori di Autosubmit
+#!/bin/bash
+# ------------------------------------------------------------------
+# Autosubmit job: run NeuralGCM inference (deterministic or stochastic)
+# ------------------------------------------------------------------
+
+set -euo pipefail
+
+# === Autosubmit variables ===
 HPCROOTDIR=%HPCROOTDIR%
 PROJDIR=%PROJDIR%
-START_DATE=%CHUNK_START_DATE%     # YYYYMMDD
+START_DATE=%CHUNK_START_DATE%   # YYYYMMDD
 END_DATE=%CHUNK_END_DATE%
 MEMBER=%MEMBER%
 
-
+# === Derived variables ===
 START_ISO="${START_DATE:0:4}-${START_DATE:4:2}-${START_DATE:6:2}"
 MEMBER_NUM="${MEMBER#fc}"
 
@@ -13,13 +20,33 @@ INDIR="${HPCROOTDIR}/DATA/${START_DATE}/${MEMBER}"
 INFILE="${INDIR}/${START_ISO}_r${MEMBER_NUM}.nc"
 OUTFILE="${INDIR}/${START_ISO}_r${MEMBER_NUM}_infer.nc"
 
-# Activate Python virtual environment
+# === Model selection (set manually or via Autosubmit config) ===
+MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
+# Example alternatives:
+# MODEL_NAME="v1/stochastic_1_4_deg.pkl"
+# MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
+
+# === Activate Python environment ===
 source /home/jgrassi/code/neuralGCM/venv/bin/activate
 
-python ${HPCROOTDIR}/git_project/runscript/infer.py \
+# === Choose which script to run based on model type ===
+if [[ "${MODEL_NAME}" == *"stochastic"* ]]; then
+    echo "Detected stochastic model → running infer-stoc.py"
+    SCRIPT="${HPCROOTDIR}/git_project/runscript/infer-stoc.py"
+else
+    echo "Detected deterministic model → running infer.py"
+    SCRIPT="${HPCROOTDIR}/git_project/runscript/infer.py"
+fi
+
+# === Run inference ===
+python "${SCRIPT}" \
   --input_path "${INFILE}" \
   --output_path "${OUTFILE}" \
   --num_steps 20 \
-  --model_name "v1/deterministic_1_4_deg.pkl"
+  --model_name "${MODEL_NAME}"
+  --n_members 10
 
-rm "${INFILE}"
+# === Optional: clean up input file after processing ===
+rm -f "${INFILE}"
+
+echo "Inference completed: ${OUTFILE}"
