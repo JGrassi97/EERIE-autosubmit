@@ -20,6 +20,6 @@ python ${HPCROOTDIR}/git_project/runscript/infer.py \
   --input_path "${INFILE}" \
   --output_path "${OUTFILE}" \
   --num_steps 20 \
-  --model_name "v1/deterministic_0_7_deg.pkl"
+  --model_name "v1/deterministic_1_4_deg.pkl"
 
 rm "${INFILE}"
