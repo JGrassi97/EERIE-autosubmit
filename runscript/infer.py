@@ -93,8 +93,6 @@ def main():
         start_with_input=True,
     )
 
-    # Convert model outputs to xarray with a numeric lead axis (hours)
-    
 
     # Build init_time from the ORIGINAL input dataset (not the regridded one)
     init0 = eerie.time.isel(time=0).values
