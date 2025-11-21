@@ -18,7 +18,10 @@ MEMBER_NUM="${MEMBER#fc}"
 
 INDIR="${HPCROOTDIR}/DATA/${START_DATE}/${MEMBER}"
 INFILE="${INDIR}/${START_ISO}_r${MEMBER_NUM}.nc"
-OUTFILE="${INDIR}/${START_ISO}_r${MEMBER_NUM}_infer.nc"
+FINAL_OUTDIR="${HPCROOTDIR}/INFERRED"
+mkdir -p "${FINAL_OUTDIR}"
+FINAL_FILE="${FINAL_OUTDIR}/${START_ISO}_r${MEMBER_NUM}_infer.nc"
+
 
 # === Model selection (set manually or via Autosubmit config) ===
 MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
@@ -28,6 +31,7 @@ MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
 
 # === Activate Python environment ===
 source /home/jgrassi/code/neuralGCM/venv/bin/activate
+export JAX_PLATFORMS=cpu
 
 # === Choose which script to run based on model type ===
 if [[ "${MODEL_NAME}" == *"stochastic"* ]]; then
@@ -41,12 +45,10 @@ fi
 # === Run inference ===
 python "${SCRIPT}" \
   --input_path "${INFILE}" \
-  --output_path "${OUTFILE}" \
+  --output_path "${FINAL_FILE}" \
   --num_steps 20 \
   --model_name "${MODEL_NAME}"
   --n_members 10
 
 # === Optional: clean up input file after processing ===
 rm -f "${INFILE}"
-
-echo "Inference completed: ${OUTFILE}"
