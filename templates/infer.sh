@@ -19,6 +19,6 @@ OUTFILE="${OUTDIR}/${START_ISO}_r${MEMBER_NUM}.nc"
 # Activate Python virtual environment
 source /home/jgrassi/code/neuralGCM/venv/bin/activate
 
-python infer.py \
+python ${HPCROOTDIR}/git_project/runscript/infer.py \
   --input_path "${INFILE}" \
   --output_path "${OUTFILE}" \
