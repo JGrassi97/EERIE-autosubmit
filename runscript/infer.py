@@ -15,7 +15,6 @@ import neuralgcm
 
 
 def load_model(model_name: str):
-    """Load NeuralGCM checkpoint from GCS and build the PressureLevelModel."""
     gcs = gcsfs.GCSFileSystem(token="anon")
     with gcs.open(f"gs://neuralgcm/models/{model_name}", "rb") as f:
         ckpt = pickle.load(f)
@@ -24,7 +23,6 @@ def load_model(model_name: str):
 
 
 def build_regridder(src_ds: xr.Dataset, dst_grid) -> horizontal_interpolation.ConservativeRegridder:
-    """Build a conservative regridder from the source xarray grid to the model horizontal grid."""
     src_grid = spherical_harmonic.Grid(
         latitude_nodes=src_ds.sizes["latitude"],
         longitude_nodes=src_ds.sizes["longitude"],
@@ -38,7 +36,6 @@ def build_regridder(src_ds: xr.Dataset, dst_grid) -> horizontal_interpolation.Co
 
 
 def regrid_and_fill(src: xr.Dataset, regridder) -> xr.Dataset:
-    """Apply horizontal regridding and fill NaNs with nearest values."""
     out = xarray_utils.regrid(src, regridder)
     out = xarray_utils.fill_nan_with_nearest(out)
     return out
@@ -56,8 +53,9 @@ def run_forecast(model,
     """
     outer_steps = (forecast_days * 24) // inner_steps
     timedelta = np.timedelta64(1, "h") * inner_steps
-    # time axis in hours since init
-    times = (np.arange(outer_steps) * inner_steps)
+
+    # Forecast lead times in hours from init
+    lead_hours = np.arange(outer_steps, dtype=np.int64) * inner_steps  # [0, inner_steps, 2*inner_steps, ...]
 
     # Initialize state from first two times (t0 for inputs, t1 for forcings)
     inputs = model.inputs_from_xarray(eval_eerie.isel(time=0))
@@ -77,34 +75,39 @@ def run_forecast(model,
         start_with_input=True,
     )
 
-    # Convert model outputs to xarray with a numeric time axis (hours since init)
-    predictions_ds = model.data_to_xarray(predictions, times=times)
+    # Convert model outputs to xarray using 'lead_hours' as the initial time axis
+    predictions_ds = model.data_to_xarray(predictions, times=lead_hours)
 
-    # Derive init_time (scalar) from the input dataset and compute valid_time
+    # Build init_time and valid_time from the input dataset
+    init_time_value = np.asarray(eval_eerie.time.isel(time=0).values).astype('datetime64[ns]')
     init_time = xr.DataArray(
-        eval_eerie.time.isel(time=0).values,
-        dims=(),
-        attrs={"long_name": "model initialization time", "standard_name": "init_time"},
+        init_time_value, dims=(),
+        attrs={"long_name": "model initialization time"}
     )
+
+    # valid_time = init_time + lead_hours (in hours)
+    valid_time_vals = init_time_value + lead_hours.astype("timedelta64[h]")
+    valid_time = xr.DataArray(
+        valid_time_vals, dims=("time",),
+        attrs={"long_name": "valid time"}
+    )
+
+    # forecast_hour as auxiliary coordinate on 'time'
     forecast_hour = xr.DataArray(
-        times, dims=("time",),
+        lead_hours, dims=("time",),
         attrs={"long_name": "forecast lead time", "units": "hours since init_time"}
     )
-    valid_time = xr.DataArray(
-        init_time.values + forecast_hour.values.astype("timedelta64[h]"),
-        dims=("time",),
-        attrs={"long_name": "valid time", "standard_name": "time"}
-    )
 
-    # Attach coordinates (keeps existing 'time' dimension; adds valid_time/init_time/forecast_hour)
+    # Replace the 'time' coordinate with valid_time, and attach init_time & forecast_hour
     predictions_ds = predictions_ds.assign_coords(
+        time=("time", valid_time.values),
         init_time=init_time,
         forecast_hour=forecast_hour,
         valid_time=("time", valid_time.values),
     )
 
-    # Optionally set 'time' to be the valid_time while keeping forecast_hour as auxiliary:
-    # predictions_ds = predictions_ds.swap_dims({"time": "time"}).assign_coords(time=("time", valid_time.values))
+    # Optional: set CF-style units/attrs on 'time'
+    predictions_ds["time"].attrs.update({"standard_name": "time"})
 
     return predictions_ds
 
