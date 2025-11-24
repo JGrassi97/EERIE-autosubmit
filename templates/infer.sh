@@ -46,9 +46,9 @@ fi
 python "${SCRIPT}" \
   --input_path "${INFILE}" \
   --output_path "${FINAL_FILE}" \
-  --num_steps 120 \
+  --num_steps 1 \
   --model_name "${MODEL_NAME}" \
-  --n_members 5
+  --n_members 1
 
 # === Optional: clean up input file after processing ===
 rm -f "${INFILE}"
