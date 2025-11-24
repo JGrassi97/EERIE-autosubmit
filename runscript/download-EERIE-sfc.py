@@ -8,11 +8,10 @@ def main():
     config = read_config(args.config)
 
     start_date = config["start_time"]
-    member = config["member"]
     output_path = config.get("output_path", ".")
     os.makedirs(output_path, exist_ok=True)
 
-    target_sfc = os.path.join(output_path, f"output_{start_date}_r{member}_sfc.grib")
+    target_sfc = os.path.join(output_path, f"output_{start_date}_sfc.grib")
 
     server = ECMWFDataServer()
     server.retrieve({
@@ -27,7 +26,7 @@ def main():
         "levtype": "sfc",
         "model": "ifs",
         "param": "31/34/78/79",
-        "realization": f"{member}",
+        "realization": "1",
         "resolution": "high",
         "stream": "clte",
         "target": target_sfc,

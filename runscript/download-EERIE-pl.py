@@ -8,11 +8,10 @@ def main():
     config = read_config(args.config)
 
     start_date = config["start_time"]
-    member = config["member"]
     output_path = config.get("output_path", ".")
     os.makedirs(output_path, exist_ok=True)
 
-    target_pl = os.path.join(output_path, f"output_{start_date}_r{member}_pl.grib")
+    target_pl = os.path.join(output_path, f"output_{start_date}_pl.grib")
 
     server = ECMWFDataServer()
     server.retrieve({
@@ -28,7 +27,7 @@ def main():
         "levtype": "pl",
         "model": "ifs",
         "param": "129/130/131/132/133", # Geopotential/Temperature/U component of wind/V component of wind/Specific humidity
-        "realization": f"{member}",
+        "realization": "1",
         "resolution": "high",
         "stream": "clte",
         "target": target_pl,

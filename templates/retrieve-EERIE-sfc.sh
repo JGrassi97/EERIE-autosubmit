@@ -11,8 +11,8 @@ MEMBER=%MEMBER%
 
 
 # Configuration directory for the Python script
-CONFIG_DIR="${HPCROOTDIR}/conf/${START_DATE}/${MEMBER}"
-CONFIG_FILE="${CONFIG_DIR}/${MEMBER}.yaml"
+CONFIG_DIR="${HPCROOTDIR}/conf/${START_DATE}"
+CONFIG_FILE="${CONFIG_DIR}/config.yaml"
 
 # Activate Python virtual environment
 source /home/jgrassi/code/mars/venv/bin/activate
