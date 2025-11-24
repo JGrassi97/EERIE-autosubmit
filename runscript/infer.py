@@ -50,10 +50,13 @@ def main():
                         help="Hours between saved outputs (e.g., 6 -> every 6h)")
     parser.add_argument("--num_steps", type=int, default=None,
                         help="Total number of saved outputs (if not set, defaults to 4*6//inner_steps)")
-
+    parser.add_argument("--member", type=int, required=True,
+                        help="Ensemble member number")
     parser.add_argument("--seed", type=int, default=42, help="RNG seed")
 
     args = parser.parse_args()
+
+    ensemble_key = jax.random.key(args.member)
 
     # Load model and input dataset
     model = load_model(args.model_name)
@@ -79,7 +82,7 @@ def main():
     inputs = model.inputs_from_xarray(eval_eerie.isel(time=0))
     input_forcings = model.forcings_from_xarray(eval_eerie.isel(time=1))
     rng_key = jax.random.key(args.seed)
-    initial_state = model.encode(inputs, input_forcings, rng_key)
+    initial_state = model.encode(inputs, input_forcings, ensemble_key)
 
     # Use persistence for forcing variables (SST & sea ice cover)
     all_forcings = model.forcings_from_xarray(eval_eerie.head(time=1))
