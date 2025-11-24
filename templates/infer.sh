@@ -46,7 +46,7 @@ fi
 python "${SCRIPT}" \
   --input_path "${INFILE}" \
   --output_path "${FINAL_FILE}" \
-  --num_steps 1 \
+  --num_steps 60 \
   --model_name "${MODEL_NAME}" \
   --n_members 1
 
