@@ -9,15 +9,15 @@ MEMBER=%MEMBER%
 
 # Derivati
 MEMBER_NUM="${MEMBER#fc}"
-OUTDIR="${HPCROOTDIR}/DATA/${START_DATE}/${MEMBER}"
+OUTDIR="${HPCROOTDIR}/DATA/${START_DATE}"
 
 # ISO per i nomi file (uguale a quello usato nello script python)
 START_ISO="${START_DATE:0:4}-${START_DATE:4:2}-${START_DATE:6:2}"
 
 # Nomi file (coerenti con lo script Python)
-PL_GRIB="${OUTDIR}/output_${START_ISO}_r${MEMBER_NUM}_pl.grib"
-PL_NC="${OUTDIR}/output_${START_ISO}_r${MEMBER_NUM}_pl.nc"
-PL_INT_NC="${OUTDIR}/output_${START_ISO}_r${MEMBER_NUM}_pl_interpolated.nc"
+PL_GRIB="${OUTDIR}/output_${START_ISO}_pl.grib"
+PL_NC="${OUTDIR}/output_${START_ISO}_pl.nc"
+PL_INT_NC="${OUTDIR}/output_${START_ISO}_pl_interpolated.nc"
 
 # Interpolazione: target in Pa (hPa x 100)
 cdo -f nc copy ${PL_GRIB} ${PL_NC}
