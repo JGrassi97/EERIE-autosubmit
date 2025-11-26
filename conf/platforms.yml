@@ -1,0 +1,16 @@
+PLATFORMS:
+    FELIPE:
+        TYPE: ps
+        HOST: felipe.polito.it
+        USER: jgrassi
+        PROJECT: test
+        ADD_PROJECT_TO_HOST: false
+        SCRATCH_DIR: /home/jgrassi/autosubmit_scratch
+        QUEUE: serial
+
+    mylocal:
+        TYPE: ps            
+        HOST: localhost   
+        USER: jgrassi
+        SCRATCH_DIR: "/work/users/jgrassi/gcm-ensemble" 
+        ADD_PROJECT_TO_HOST: false

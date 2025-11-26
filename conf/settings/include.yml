@@ -1,0 +1,11 @@
+DEFAULT:
+  CUSTOM_CONFIG:
+    PRE:
+      - "%PROJDIR%/conf/platforms.yml"
+      - "%PROJDIR%/conf/expdef.yml"
+      - "%PROJDIR%/conf/jobs.yml"
+
+      # - "%PROJDIR%/conf/general.yml"
+      # - "%PROJDIR%/conf/models/%MODEL.NAME%/%MODEL.NAME%.yml"
+      # - "%PROJDIR%/conf/ics/%MODEL.ICS%.yml"
+      # - "%PROJDIR%/conf/simulation/%MODEL.SIMULATION%.yml"
