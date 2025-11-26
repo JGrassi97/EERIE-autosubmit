@@ -26,7 +26,7 @@ FINAL_FILE="${FINAL_OUTDIR}/${START_ISO}_r${MEMBER_NUM}_infer.nc"
 N_STEPS=%INFERENCE_RULES.N_STEPS%
 
 # === Model selection (set manually or via Autosubmit config) ===
-MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
+MODEL_NAME=%INFERENCE_RULES.MODEL_NAME%
 # Example alternatives:
 # MODEL_NAME="v1/stochastic_1_4_deg.pkl"
 # MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
