@@ -12,6 +12,7 @@ START_DATE=%CHUNK_START_DATE%   # YYYYMMDD
 END_DATE=%CHUNK_END_DATE%
 MEMBER=%MEMBER%
 
+
 # === Derived variables ===
 START_ISO="${START_DATE:0:4}-${START_DATE:4:2}-${START_DATE:6:2}"
 MEMBER_NUM="${MEMBER#fc}"
@@ -21,6 +22,8 @@ INFILE="${INDIR}/${START_ISO}.nc"
 FINAL_OUTDIR="${HPCROOTDIR}/INFERRED/${START_DATE}/${MEMBER}"
 mkdir -p "${FINAL_OUTDIR}"
 FINAL_FILE="${FINAL_OUTDIR}/${START_ISO}_r${MEMBER_NUM}_infer.nc"
+
+N_STEPS=%INFERENCE_RULES.N_STEPS%
 
 # === Model selection (set manually or via Autosubmit config) ===
 MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
@@ -47,7 +50,7 @@ SCRIPT="${HPCROOTDIR}/git_project/runscript/infer.py"
 python "${SCRIPT}" \
   --input_path "${INFILE}" \
   --output_path "${FINAL_FILE}" \
-  --num_steps 60 \
+  --num_steps 6 \
   --model_name "${MODEL_NAME}" \
   --member "${MEMBER_NUM}"
 
