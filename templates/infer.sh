@@ -50,7 +50,7 @@ SCRIPT="${HPCROOTDIR}/git_project/runscript/infer.py"
 python "${SCRIPT}" \
   --input_path "${INFILE}" \
   --output_path "${FINAL_FILE}" \
-  --num_steps 6 \
+  --num_steps "${N_STEPS}" \
   --model_name "${MODEL_NAME}" \
   --member "${MEMBER_NUM}"
 
