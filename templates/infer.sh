@@ -29,7 +29,7 @@ MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
 # MODEL_NAME="v1_precip/stochastic_precip_2_8_deg.pkl"
 
 # === Activate Python environment ===
-source /home/jgrassi/code/neuralGCM/venv/bin/activate
+source /work/users/jgrassi/code/neuralGCM/venv/bin/activate
 export JAX_PLATFORMS=cpu
 
 # # === Choose which script to run based on model type ===

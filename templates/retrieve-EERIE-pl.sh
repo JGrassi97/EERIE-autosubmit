@@ -15,7 +15,7 @@ CONFIG_DIR="${HPCROOTDIR}/conf/${START_DATE}"
 CONFIG_FILE="${CONFIG_DIR}/config.yaml"
 
 # Activate Python virtual environment
-source /home/jgrassi/code/mars/venv/bin/activate
+source /work/users/jgrassi/code/mars/venv/bin/activate
 
 # Run the Python script
 python ${HPCROOTDIR}/git_project/runscript/download-EERIE-pl.py --config "${CONFIG_FILE}"
