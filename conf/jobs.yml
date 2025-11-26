@@ -1,0 +1,40 @@
+JOBS:
+  REMOTE_SETUP:
+    FILE: templates/remote_setup.sh
+    PLATFORM: FELIPE
+    RUNNNING: once
+  PREPARE_CONFIG:
+    FILE: templates/prepare-config.sh
+    DEPENDENCIES: REMOTE_SETUP
+    PLATFORM: FELIPE
+    RUNNING: chunk
+  RETRIEVE_EERIE_PL:
+    FILE: templates/retrieve-EERIE-pl.sh
+    DEPENDENCIES: PREPARE_CONFIG
+    PLATFORM: FELIPE
+    RUNNING: chunk
+  RETRIEVE_EERIE_SFC:
+    FILE: templates/retrieve-EERIE-sfc.sh
+    DEPENDENCIES: PREPARE_CONFIG
+    PLATFORM: FELIPE
+    RUNNING: chunk
+  POSTPROCESS_PL:
+    FILE: templates/postprocess-pl.sh
+    DEPENDENCIES: RETRIEVE_EERIE_PL
+    PLATFORM: FELIPE
+    RUNNING: chunk
+  POSTPROCESS_SFC:
+    FILE: templates/postprocess-sfc.sh
+    DEPENDENCIES: RETRIEVE_EERIE_SFC
+    PLATFORM: FELIPE
+    RUNNING: chunk
+  PREPARE_INPUT_LAYER:
+    FILE: templates/prepare-input-layer.sh
+    DEPENDENCIES: POSTPROCESS_PL POSTPROCESS_SFC
+    PLATFORM: FELIPE
+    RUNNING: chunk
+  INFER:
+    FILE: templates/infer.sh
+    DEPENDENCIES: PREPARE_INPUT_LAYER
+    PLATFORM: FELIPE
+    RUNNING: chunk
