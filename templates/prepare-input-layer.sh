@@ -14,7 +14,7 @@ PL_INT_NC="${OUTDIR}/output_${START_ISO}_pl_interpolated.nc"
 OUTFILE="${OUTDIR}/${START_ISO}.nc"
 
 # Activate Python virtual environment
-source /work/users/jgrassi/code/neuralGCM/venv/bin/activate
+source "$HPCROOTDIR/venv/bin/activate"
 
 # === Run the Python preparation script ===
 python "${HPCROOTDIR}/git_project/runscript/prepare_input_layer.py" \
