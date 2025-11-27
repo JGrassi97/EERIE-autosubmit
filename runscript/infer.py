@@ -109,6 +109,7 @@ def main():
     predictions_ds = predictions_ds.assign_coords(step=("valid_time", steps))
     predictions_ds = predictions_ds.drop_vars('sim_time')
 
+
     # Save
     predictions_ds.to_netcdf(args.output_path)
 
