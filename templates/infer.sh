@@ -53,6 +53,3 @@ python "${SCRIPT}" \
   --model_name "${MODEL_NAME}" \
   --member "${MEMBER_NUM}" \
   --variables ${VARIABLES// /,}
-
-# === Optional: clean up input file after processing ===
-rm -f "${INFILE}"
