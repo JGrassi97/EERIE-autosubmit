@@ -119,7 +119,7 @@ def main():
     # Save
     for variable in variables:
         out_path = os.path.join(args.output_path, variable, f"fc{args.member}", f"{initial_time}_{variable}_r{args.member}_infer.nc")
-        predictions_ds['variable'].to_netcdf(out_path)
+        predictions_ds[variable].to_netcdf(out_path)
 
 
 if __name__ == "__main__":
