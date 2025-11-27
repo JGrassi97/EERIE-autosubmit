@@ -12,7 +12,7 @@ END_DATE=%CHUNK_END_DATE%
 GIT_ORIGIN=%GIT.PROJECT_ORIGIN%
 PROJECT_BRANCH=%GIT.PROJECT_BRANCH%
 VARIABLES="%INFERENCE_RULES.VARIABLES%"
-MEMBERS="%MEXPERIMENT.MEMBERS%"
+MEMBERS="%EXPERIMENT.MEMBERS%"
 
 # -----------------------------
 # Create project directory
@@ -61,10 +61,10 @@ python -m pip install --upgrade pip setuptools wheel
 
 python -m pip install \
     ecmwf-api-client \
-    # "xarray[complete]" \
-    # numpy \
-    # neuralgcm \
-    # gcsfs
+    "xarray[complete]" \
+    numpy \
+    neuralgcm \
+    gcsfs
 
 
 # -----------------------------
