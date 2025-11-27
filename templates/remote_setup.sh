@@ -56,15 +56,15 @@ source "$HPCROOTDIR/venv/bin/activate"
 # Install runtime dependencies
 # -----------------------------
 # Use python -m pip to avoid interference with user/global pip
-# python -m ensurepip --upgrade
-# python -m pip install --upgrade pip setuptools wheel
+python -m ensurepip --upgrade
+python -m pip install --upgrade pip setuptools wheel
 
-# python -m pip install \
-#     ecmwf-api-client \
-#     "xarray[complete]" \
-#     numpy \
-#     neuralgcm \
-#     gcsfs
+python -m pip install \
+    ecmwf-api-client \
+    # "xarray[complete]" \
+    # numpy \
+    # neuralgcm \
+    # gcsfs
 
 
 # -----------------------------
