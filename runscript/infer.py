@@ -96,16 +96,16 @@ def main():
         start_with_input=True,
     )
 
-    predictions_ds = model.data_to_xarray(predictions)
-
     # Build init_time from the ORIGINAL input dataset (not the regridded one)
     initial_time = eerie.time.isel(time=0).values
     valid_time = initial_time + np.arange(outer_steps) * timedelta
     steps = np.arange(outer_steps) * timedelta
 
-    predictions_ds = predictions_ds.assign_coords(ics_time=initial_time)
-    predictions_ds['time'] = valid_time
+    predictions_ds = model.data_to_xarray(predictions, times=valid_time)
+
+    
     predictions_ds = predictions_ds.rename({'time':'valid_time'})
+    predictions_ds = predictions_ds.assign_coords(time=initial_time)
     predictions_ds = predictions_ds.assign_coords(step=("valid_time", steps))
     predictions_ds = predictions_ds.drop_vars('sim_time')
 
