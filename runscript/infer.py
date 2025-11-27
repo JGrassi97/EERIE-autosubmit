@@ -96,23 +96,18 @@ def main():
         start_with_input=True,
     )
 
+    predictions_ds = model.data_to_xarray(predictions)
 
     # Build init_time from the ORIGINAL input dataset (not the regridded one)
-    init0 = eerie.time.isel(time=0).values
-    init_time_value = np.datetime64(init0, "ns")  # force datetime64[ns]
+    initial_time = eerie.time.isel(time=0).values
+    valid_time = initial_time + np.arange(outer_steps) * timedelta
+    steps = np.arange(outer_steps) * timedelta
 
-    # valid_time = init_time + lead_hours[h]
-    valid_time_vals = (init_time_value + lead_hours.astype("timedelta64[h]")).astype("datetime64[ns]")
-
-    predictions_ds = model.data_to_xarray(predictions, times=valid_time_vals)
-
-    # Assign coordinates: replace 'time' with valid_time; keep forecast_hour auxiliary; add init_time (scalar)
-    predictions_ds = predictions_ds.assign_coords(
-        init_time=init_time_value,
-    )
-
-    predictions_ds["init_time"].attrs.update({"standard_name": "initialization_time"})
-    predictions_ds["time"].attrs.update({"standard_name": "time"})
+    predictions_ds = predictions_ds.assign_coords(ics_time=initial_time)
+    predictions_ds['time'] = valid_time
+    predictions_ds = predictions_ds.rename({'time':'valid_time'})
+    predictions_ds = predictions_ds.assign_coords(step=("valid_time", steps))
+    predictions_ds = predictions_ds.drop_vars('sim_time')
 
     # Save
     predictions_ds.to_netcdf(args.output_path)
