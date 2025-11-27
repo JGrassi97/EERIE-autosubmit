@@ -20,9 +20,7 @@ MEMBER_NUM="${MEMBER#fc}"
 
 INDIR="${HPCROOTDIR}/DATA/${START_DATE}"
 INFILE="${INDIR}/${START_ISO}.nc"
-FINAL_OUTDIR="${HPCROOTDIR}/INFERRED/${MEMBER}"
-mkdir -p "${FINAL_OUTDIR}"
-FINAL_FILE="${FINAL_OUTDIR}/${START_ISO}_r${MEMBER_NUM}_infer.nc"
+FINAL_OUTDIR="${HPCROOTDIR}/INFERRED/"
 
 N_STEPS=%INFERENCE_RULES.N_STEPS%
 
@@ -50,7 +48,7 @@ SCRIPT="${HPCROOTDIR}/git_project/runscript/infer.py"
 # === Run inference ===
 python "${SCRIPT}" \
   --input_path "${INFILE}" \
-  --output_path "${FINAL_FILE}" \
+  --output_path "${FINAL_OUTDIR}" \
   --num_steps "${N_STEPS}" \
   --model_name "${MODEL_NAME}" \
   --member "${MEMBER_NUM}" \

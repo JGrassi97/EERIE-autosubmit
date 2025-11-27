@@ -7,6 +7,7 @@ import numpy as np
 import xarray as xr
 import gcsfs
 import jax
+import os
 
 from dinosaur import horizontal_interpolation
 from dinosaur import spherical_harmonic
@@ -52,11 +53,16 @@ def main():
                         help="Total number of saved outputs (if not set, defaults to 4*6//inner_steps)")
     parser.add_argument("--member", type=int, required=True,
                         help="Ensemble member number")
+    parser.add_argument("--variables", type=str,required=True,
+                        help="Comma-separated list of variables")
+
+
     parser.add_argument("--seed", type=int, default=42, help="RNG seed")
 
     args = parser.parse_args()
 
     ensemble_key = jax.random.key(args.member)
+    variables = args.variables.split(",")
 
     # Load model and input dataset
     model = load_model(args.model_name)
@@ -111,7 +117,9 @@ def main():
 
 
     # Save
-    predictions_ds.to_netcdf(args.output_path)
+    for variable in variables:
+        out_path = os.path.join(args.output_path, variable, f"fc{args.member}", f"{initial_time}_{variable}_r{args.member}_infer.nc")
+        predictions_ds['variable'].to_netcdf(out_path)
 
 
 if __name__ == "__main__":
