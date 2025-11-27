@@ -11,6 +11,8 @@ START_DATE=%CHUNK_START_DATE%
 END_DATE=%CHUNK_END_DATE%
 GIT_ORIGIN=%GIT.PROJECT_ORIGIN%
 PROJECT_BRANCH=%GIT.PROJECT_BRANCH%
+VARIABLES=%INFERENCE_RULES.VARIABLES%
+MEMBERS=%MEXPERIMENT.MEMBERS%
 
 # -----------------------------
 # Create project directory
@@ -54,12 +56,26 @@ source "$HPCROOTDIR/venv/bin/activate"
 # Install runtime dependencies
 # -----------------------------
 # Use python -m pip to avoid interference with user/global pip
-python -m ensurepip --upgrade
-python -m pip install --upgrade pip setuptools wheel
+# python -m ensurepip --upgrade
+# python -m pip install --upgrade pip setuptools wheel
 
-python -m pip install \
-    ecmwf-api-client \
-    "xarray[complete]" \
-    numpy \
-    neuralgcm \
-    gcsfs
+# python -m pip install \
+#     ecmwf-api-client \
+#     "xarray[complete]" \
+#     numpy \
+#     neuralgcm \
+#     gcsfs
+
+
+# -----------------------------
+# Prepare output folders
+# -----------------------------
+
+mkdir -p "${HPCROOTDIR}/DATA"
+
+# scorri lista per tutte le variabili e membri e crea cartelle
+for MEM in ${MEMBERS}; do
+    for VAR in ${VARIABLES}; do
+        mkdir -p "${HPCROOTDIR}/INFERRED/${VAR}/${MEM}"
+    done
+done

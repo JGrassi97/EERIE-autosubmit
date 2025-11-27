@@ -11,6 +11,7 @@ PROJDIR=%PROJDIR%
 START_DATE=%CHUNK_START_DATE%   # YYYYMMDD
 END_DATE=%CHUNK_END_DATE%
 MEMBER=%MEMBER%
+VARIABLES=%INFERENCE_RULES.VARIABLES%
 
 
 # === Derived variables ===
@@ -52,7 +53,8 @@ python "${SCRIPT}" \
   --output_path "${FINAL_FILE}" \
   --num_steps "${N_STEPS}" \
   --model_name "${MODEL_NAME}" \
-  --member "${MEMBER_NUM}"
+  --member "${MEMBER_NUM}" \
+  --variables ${VARIABLES// /,}
 
 # === Optional: clean up input file after processing ===
 rm -f "${INFILE}"
