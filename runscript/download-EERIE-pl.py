@@ -26,7 +26,7 @@ def main():
         "levelist": "1/5/10/20/30/50/70/100/150/200/250/300/400/500/600/700/850/925/1000",
         "levtype": "pl",
         "model": "ifs",
-        "param": "129/130/131/132/133", # Geopotential/Temperature/U component of wind/V component of wind/Specific humidity
+        "param": "129/130/131/132/133/157", # Geopotential/Temperature/U component of wind/V component of wind/Specific humidity
         "realization": "1",
         "resolution": "high",
         "stream": "clte",
