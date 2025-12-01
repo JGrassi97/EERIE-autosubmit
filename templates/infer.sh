@@ -62,7 +62,7 @@ PLEVELS="1,5,10,20,30,50,70,100,150,200,250,300,400,500,600,700,850,925,1000"
 for member in ${MEMBERS}; do
   for variable in ${VARIABLES}; do
 
-    in_file="${FINAL_OUTDIR}/${variable}/fc${member}/${START_ISO}_${variable}_${member}_infer.nc"
+    in_file="${FINAL_OUTDIR}/${variable}/${member}/${START_ISO}_${variable}_${member}_infer.nc"
     out_file="${in_file/_infer/}"
 
     mkdir -p "$(dirname "${out_file}")"
