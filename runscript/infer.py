@@ -118,7 +118,7 @@ def main():
 
     # Save
     for variable in variables:
-        out_path = os.path.join(args.output_path, variable, f"fc{args.member}", f"{str(initial_time)[0:10]}_{variable}_r{args.member}_infer.nc")
+        out_path = os.path.join(args.output_path, variable, f"fc{args.member}", f"{str(initial_time)[0:10]}_{variable}_fc{args.member}_infer.nc")
         predictions_ds[variable].to_netcdf(out_path)
 
 
