@@ -38,8 +38,8 @@ JOBS:
     DEPENDENCIES: PREPARE_INPUT_LAYER
     PLATFORM: FELIPE
     RUNNING: chunk
-  FINAL_POSTPROCESS:
-    FILE: templates/final-postprocess.sh
-    DEPENDENCIES: INFER
-    PLATFORM: FELIPE
-    RUNNING: date
+  # FINAL_POSTPROCESS:
+  #   FILE: templates/final-postprocess.sh
+  #   DEPENDENCIES: INFER
+  #   PLATFORM: FELIPE
+  #   RUNNING: date

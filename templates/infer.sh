@@ -53,3 +53,23 @@ python "${SCRIPT}" \
   --model_name "${MODEL_NAME}" \
   --member "${MEMBER_NUM}" \
   --variables ${VARIABLES// /,}
+
+
+# Pressure levels (hPa)
+PLEVELS="1,5,10,20,30,50,70,100,150,200,250,300,400,500,600,700,850,925,1000"
+
+for member in ${MEMBERS}; do
+  for variable in ${VARIABLES}; do
+
+    in_file="${FINAL_OUTDIR}/${variable}/fc${member}/${initial_time}_${variable}_r${member}_infer.nc"
+    out_file="${in_file/_infer/}"
+
+    mkdir -p "$(dirname "${out_file}")"
+
+    # Select requested pressure levels
+    cdo -s sellevel,${PLEVELS} "${in_file}" "${out_file}"
+
+    # Remove intermediate *_infer file
+    rm -f "${in_file}"
+  done
+done
